@@ -75,5 +75,24 @@
                 }
             ]
         }
+    },
+
+    "POST /api/articles/:article_id/comments":
+    {
+        "description": "Sends a comment to the database.",
+        "queries": [],
+        "format": { "username": "<string of an existing user>", "body": "<any string>" },
+        "exampleResponse":
+        {
+            "comment":
+            {
+                "comment_id": 19,
+                "body": "This is a test comment.",
+                "article_id": 1,
+                "author": "butter_bridge",
+                "votes": 0,
+                "created_at": "2020-01-01T03:08:00.000Z"
+            }
+        }
     }
 }

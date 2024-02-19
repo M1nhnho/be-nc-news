@@ -192,20 +192,42 @@ describe('/api/articles', () =>
                             expect(comment.created_at).toBeString(); // Dynamic test - separated due to 'created_at' being the current time of posting
                         });
                 });
-                test("STATUS 400 - Responds with 'Bad Request' when posted object is missing required properties.", () => {
+                test("STATUS 404 - Responds with 'Not Found' when requested with a valid article ID but it doesn't exist.", () =>
+                {
                     return request(app)
-                        .post('/api/articles/1/comments')
-                        .send({ body: 'This is a test comment.' })
+                        .post('/api/articles/999999/comments')
+                        .send({ username: 'butter_bridge', body: 'This is a test comment.' })
+                        .expect(404)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Not Found');
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid article ID.", () =>
+                {
+                    return request(app)
+                        .post('/api/articles/not_a_number/comments')
+                        .send({ username: 'butter_bridge', body: 'This is a test comment.' })
                         .expect(400)
                         .then(({ body: { msg } }) =>
                         {
                             expect(msg).toBe('Bad Request');
                         });
                 });
-                test("STATUS 400 - Responds with 'Bad Request' when posted object has invalid property values.", () => {
+                test("STATUS 404 - Responds with 'Not Found' when posted object has a non-existent username.", () => {
                     return request(app)
                         .post('/api/articles/1/comments')
                         .send({ username: 'not_an_existing_user', body: 'This is a test comment.' })
+                        .expect(404)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Not Found');
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when posted object is missing required properties.", () => {
+                    return request(app)
+                        .post('/api/articles/1/comments')
+                        .send({ body: 'This is a test comment.' })
                         .expect(400)
                         .then(({ body: { msg } }) =>
                         {
