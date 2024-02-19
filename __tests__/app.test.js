@@ -88,17 +88,18 @@ describe('/api/articles', () =>
                     .then(({ body: { article } }) =>
                     {
                         expect(article).toMatchObject(
-                        {
-                            article_id: 1,
-                            title: "Living in the shadow of a great man",
-                            topic: "mitch",
-                            author: "butter_bridge",
-                            body: "I find this existence challenging",
-                            created_at: "2020-07-09T20:11:00.000Z",
-                            votes: 100,
-                            article_img_url:
-                            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-                        });
+                            {
+                                article_id: 1,
+                                title: "Living in the shadow of a great man",
+                                topic: "mitch",
+                                author: "butter_bridge",
+                                body: "I find this existence challenging",
+                                created_at: "2020-07-09T20:11:00.000Z",
+                                votes: 100,
+                                article_img_url:
+                                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                            }
+                        );
                     });
             });
             test("STATUS 404 - Responds with 'Not Found' when requested with a valid ID but it doesn't exist.", () =>
@@ -142,7 +143,7 @@ describe('/api/articles', () =>
                                 expect(created_at).toBeString();
                                 expect(author).toBeString();
                                 expect(body).toBeString();
-                                expect(article_id).toBeNumber();
+                                expect(article_id).toBe(1);
                             });
                             expect(comments).toBeSortedBy('created_at', {descending: true});
                         });
@@ -161,6 +162,50 @@ describe('/api/articles', () =>
                 {
                     return request(app)
                         .get('/api/articles/not_a_number/comments')
+                        .expect(400)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Bad Request');
+                        });
+                });
+            });
+
+            describe('POST', () =>
+            {
+                test("STATUS 201 - Responds with the posted comment object.", () =>
+                {
+                    return request(app)
+                        .post('/api/articles/1/comments')
+                        .send({ username: 'butter_bridge', body: 'This is a test comment.' })
+                        .expect(201)
+                        .then(({ body: { comment } }) =>
+                        {
+                            expect(comment).toMatchObject(
+                                {
+                                    comment_id: 19,
+                                    votes: 0,
+                                    author: 'butter_bridge',
+                                    body: 'This is a test comment.',
+                                    article_id: 1
+                                }
+                            );
+                            expect(comment.created_at).toBeString(); // Dynamic test - separated due to 'created_at' being the current time of posting
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when posted object is missing required properties.", () => {
+                    return request(app)
+                        .post('/api/articles/1/comments')
+                        .send({ body: 'This is a test comment.' })
+                        .expect(400)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Bad Request');
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when posted object has invalid property values.", () => {
+                    return request(app)
+                        .post('/api/articles/1/comments')
+                        .send({ username: 'not_an_existing_user', body: 'This is a test comment.' })
                         .expect(400)
                         .then(({ body: { msg } }) =>
                         {
