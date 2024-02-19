@@ -122,5 +122,52 @@ describe('/api/articles', () =>
                     });
             });
         });
+
+        describe('/comments', () =>
+        {
+            describe('GET', () =>
+            {
+                test("STATUS 200 - Responds with an array of all comment objects from the article object of the requested ID.", () =>
+                {
+                    return request(app)
+                        .get('/api/articles/1/comments')
+                        .expect(200)
+                        .then(({ body: { comments } }) =>
+                        {
+                            expect(comments).toHaveLength(11);
+                            comments.forEach(({ comment_id, votes, created_at, author, body, article_id }) =>
+                            {
+                                expect(comment_id).toBeNumber();
+                                expect(votes).toBeNumber();
+                                expect(created_at).toBeString();
+                                expect(author).toBeString();
+                                expect(body).toBeString();
+                                expect(article_id).toBeNumber();
+                            });
+                            expect(comments).toBeSortedBy('created_at', {descending: true});
+                        });
+                });
+                test("STATUS 404 - Responds with 'Not Found' when requested with a valid article ID but it doesn't exist.", () =>
+                {
+                    return request(app)
+                        .get('/api/articles/999999/comments')
+                        .expect(404)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Not Found');
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid article ID.", () =>
+                {
+                    return request(app)
+                        .get('/api/articles/not_a_number/comments')
+                        .expect(400)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Bad Request');
+                        });
+                });
+            });
+        });
     });
 });
