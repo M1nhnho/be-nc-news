@@ -147,7 +147,7 @@ describe('/api/articles', () =>
                             expect(comments).toBeSortedBy('created_at', {descending: true});
                         });
                 });
-                test("STATUS 404 - Responds with 'Not Found' when requested with a valid ID but it doesn't exist.", () =>
+                test("STATUS 404 - Responds with 'Not Found' when requested with a valid article ID but it doesn't exist.", () =>
                 {
                     return request(app)
                         .get('/api/articles/999999/comments')
@@ -157,7 +157,7 @@ describe('/api/articles', () =>
                             expect(msg).toBe('Not Found');
                         });
                 });
-                test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid ID.", () =>
+                test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid article ID.", () =>
                 {
                     return request(app)
                         .get('/api/articles/not_a_number/comments')
