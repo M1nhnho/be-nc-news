@@ -30,7 +30,7 @@ describe('/api/topics', () =>
 {
     describe('GET', () =>
     {
-        test("STATUS 200 - Responds with an array of topic objects each with the properties: 'slug' and 'description'.", () =>
+        test("STATUS 200 - Responds with an array of all topic objects.", () =>
         {
             return request(app)
                 .get('/api/topics')
@@ -40,8 +40,8 @@ describe('/api/topics', () =>
                     expect(topics).toHaveLength(3);
                     topics.forEach(({ slug, description }) =>
                     {
-                        expect(typeof slug).toBe('string');
-                        expect(typeof description).toBe('string');
+                        expect(typeof slug).toBeString();
+                        expect(typeof description).toBeString();
                     });
                 });
         });
@@ -50,6 +50,32 @@ describe('/api/topics', () =>
 
 describe('/api/articles', () =>
 {
+    describe('GET', () =>
+    {
+        test('STATUS 200 - Responds with an array of all article objects.', () =>
+        {
+            return request(app)
+                .get('/api/articles')
+                .expect(200)
+                .then(({ body: { articles } }) =>
+                {
+                    expect(articles).toHaveLength(13);
+                    articles.forEach(({ author, title, article_id, topic, created_at, votes, article_img_url, comment_count }) =>
+                    {
+                        expect(author).toBeString();
+                        expect(title).toBeString();
+                        expect(article_id).toBeNumber();
+                        expect(topic).toBeString();
+                        expect(created_at).toBeString();
+                        expect(votes).toBeNumber();
+                        expect(article_img_url).toBeString();
+                        expect(comment_count).toBeNumber();
+                    });
+                    expect(articles).toBeSortedBy('created_at', {descending: true});
+                });
+        });
+    });
+
     describe('/:article_id', () =>
     {
         describe('GET', () =>
@@ -63,6 +89,7 @@ describe('/api/articles', () =>
                     {
                         expect(article).toMatchObject(
                         {
+                            article_id: 1,
                             title: "Living in the shadow of a great man",
                             topic: "mitch",
                             author: "butter_bridge",

@@ -25,13 +25,14 @@
             "articles":
             [
                 {
-                "title": "Seafood substitutions are increasing",
-                "topic": "cooking",
-                "author": "weegembump",
-                "body": "Text from the article..",
-                "created_at": "2018-05-30T15:59:13.341Z",
-                "votes": 0,
-                "comment_count": 6
+                    "author": "weegembump",
+                    "title": "Seafood substitutions are increasing",
+                    "article_id": 17,
+                    "topic": "cooking",
+                    "created_at": "2018-05-30T15:59:13.341Z",
+                    "votes": 0,
+                    "article_img_url": "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?w=700&h=700",
+                    "comment_count": 6
                 }
             ]
         }
@@ -46,6 +47,7 @@
         {
             "article":
             {
+                "article_id": 1,
                 "title": "Living in the shadow of a great man",
                 "topic": "mitch",
                 "author": "butter_bridge",
