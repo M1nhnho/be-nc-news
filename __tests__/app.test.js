@@ -3,6 +3,7 @@ const app = require('../app.js');
 const db = require('../db/connection.js');
 const seed = require('../db/seeds/seed.js');
 const data = require('../db/data/test-data');
+const endpointsData = require('../endpoints.json');
 
 beforeEach(() => seed(data));
 afterAll(() => db.end());
@@ -18,20 +19,8 @@ describe('/api', () =>
                 .expect(200)
                 .then(({ body: { endpoints } }) =>
                 {
-                    parsedEndpoints = JSON.parse(endpoints);
-
-                    // 'GET /api' only has the 'description' property.
-                    expect(parsedEndpoints['GET /api'].description).toBe('Serves up a JSON representation of all the available endpoints of the API.');
-
-                    // Otherwise, rest should have all 4 properties: 'description', 'queries', 'requestFormat', and 'exampleResponse'.
-                    const remainingEndpoints = Object.values(parsedEndpoints).slice(1, Object.values(parsedEndpoints).length);
-                    remainingEndpoints.forEach(({ description, queries, requestFormat, exampleResponse }) =>
-                    {
-                        expect(typeof description).toBe('string');
-                        expect(Array.isArray(queries)).toBe(true);
-                        expect(typeof requestFormat).toBe('object');
-                        expect(typeof exampleResponse).toBe('object');
-                    });
+                    const parsedEndpointsResponse = JSON.parse(endpoints);
+                    expect(parsedEndpointsResponse).toEqual(endpointsData);
                 });
         });
     });
