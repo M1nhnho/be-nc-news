@@ -1,6 +1,6 @@
-const fs = require('fs/promises');
+const endpointsData = require('../endpoints.json');
 
 exports.selectAPIEndpoints = () =>
 {
-    return fs.readFile(`${__dirname}/../endpoints.json`, 'utf8');
+    return Promise.resolve(JSON.stringify(endpointsData));
 };
