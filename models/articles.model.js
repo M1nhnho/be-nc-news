@@ -1,17 +1,29 @@
 const db = require('../db/connection.js');
+const { checkExists } = require('../utils/checkExists.js');
 
-exports.selectArticles = (topic = '%') =>
+
+exports.selectArticles = (topicValue = '%') =>
 {
-    return db.query(
+    const promises =
+    [
+        db.query(
             `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count
                 FROM articles LEFT JOIN comments
                     ON articles.article_id = comments.article_id
                 WHERE articles.topic LIKE $1
                 GROUP BY articles.article_id
                 ORDER BY articles.created_at DESC;`,
-            [topic]
+            [topicValue]
         )
-        .then(({ rows }) =>
+    ];
+
+    if (topicValue !== '%')
+    {   // If there is a topic query, check topic exists
+        promises.push(checkExists('topics', 'slug', topicValue))
+    }
+
+    return Promise.all(promises)
+        .then(([{ rows }]) =>
         {
             return rows;
         });
