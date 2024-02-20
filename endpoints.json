@@ -103,7 +103,7 @@
     {
         "description": "Sends a comment to the database.",
         "queries": [],
-        "format": { "username": "<string of an existing user>", "body": "<any string>" },
+        "requestBodyFormat": { "username": "<string of an existing user>", "body": "<any string>" },
         "exampleResponse":
         {
             "comment":
