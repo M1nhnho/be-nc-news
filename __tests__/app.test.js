@@ -103,11 +103,21 @@ describe('/api', () =>
                 test('STATUS 200 - Responds with an empty array when there are no article objects of the queried topic.', () =>
                 {
                     return request(app)
-                        .get('/api/articles?topic=not_an_existing_topic')
+                        .get('/api/articles?topic=paper')
                         .expect(200)
                         .then(({ body: { articles } }) =>
                         {
                             expect(articles).toHaveLength(0);
+                        });
+                });
+                test("STATUS 404 - Responds with 'Not Found' when queried with an valid but non-existent topic.", () =>
+                {
+                    return request(app)
+                        .get('/api/articles?topic=not_an_existing_topic')
+                        .expect(404)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Not Found');
                         });
                 });
             });
