@@ -17,8 +17,7 @@ exports.checkExists = (table, column, value) =>
             })
             .catch((error) =>
             {
-                // Presumably will throw a PSQL error that table/column does not exist
-                return reject({ status: 404, msg: 'Not Found' });
+                return reject(error);
             });
     });
 }
