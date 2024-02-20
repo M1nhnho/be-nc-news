@@ -246,7 +246,7 @@ describe('/api', () =>
                     {
                         return request(app)
                             .get('/api/articles/11/comments')
-                            .expect(200)
+                            .expect(200) // Either 200 or 204 works but opted for 200 in that something does get returned, it's just empty
                             .then(({ body: { comments } }) =>
                             {
                                 expect(comments).toHaveLength(0);
@@ -340,6 +340,43 @@ describe('/api', () =>
                                 expect(msg).toBe('Bad Request');
                             });
                     });
+                });
+            });
+        });
+    });
+
+
+    describe('/comments', () =>
+    {
+        describe('/:comment_id', () =>
+        {
+            describe('DELETE', () =>
+            {
+                test('STATUS 204 - Responds with only the status code and no content.', () =>
+                {
+                    return request(app)
+                        .delete('/api/comments/1')
+                        .expect(204);
+                });
+                test("STATUS 404 - Responds with 'Not Found' when requested with a valid but non-existent ID.", () =>
+                {
+                    return request(app)
+                        .delete('/api/comments/999999')
+                        .expect(404)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Not Found');
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid ID.", () =>
+                {
+                    return request(app)
+                        .delete('/api/comments/not_a_number')
+                        .expect(400)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Bad Request');
+                        });
                 });
             });
         });
