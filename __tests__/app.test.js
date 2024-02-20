@@ -75,6 +75,42 @@ describe('/api', () =>
                         expect(articles).toBeSortedBy('created_at', {descending: true});
                     });
             });
+
+            describe('?topic=:topic', () =>
+            {
+                test('STATUS 200 - Responds with an array of all article objects of the queried topic sorted by most recent by default.', () =>
+                {
+                    return request(app)
+                        .get('/api/articles?topic=mitch')
+                        .expect(200)
+                        .then(({ body: { articles } }) =>
+                        {
+                            expect(articles).toHaveLength(12);
+                            articles.forEach(({ author, title, article_id, topic, created_at, votes, article_img_url, comment_count }) =>
+                            {
+                                expect(author).toBeString();
+                                expect(title).toBeString();
+                                expect(article_id).toBeNumber();
+                                expect(topic).toBe('mitch');
+                                expect(created_at).toBeString();
+                                expect(votes).toBeNumber();
+                                expect(article_img_url).toBeString();
+                                expect(comment_count).toBeNumber();
+                            });
+                            expect(articles).toBeSortedBy('created_at', {descending: true});
+                        });
+                });
+                test('STATUS 200 - Responds with an empty array when there are no article objects of the queried topic.', () =>
+                {
+                    return request(app)
+                        .get('/api/articles?topic=not_an_existing_topic')
+                        .expect(200)
+                        .then(({ body: { articles } }) =>
+                        {
+                            expect(articles).toHaveLength(0);
+                        });
+                });
+            });
         });
 
         describe('/:article_id', () =>
