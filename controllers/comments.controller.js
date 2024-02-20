@@ -1,10 +1,13 @@
 const { selectCommentsByArticleID, insertCommentAtArticleID } = require("../models/comments.model.js");
+const { selectArticleByID } = require("../models/articles.model.js");
 
 exports.getCommentsByArticleID = (request, response, next) =>
 {
     const { article_id } = request.params;
-    selectCommentsByArticleID(article_id)
-        .then((comments) =>
+    const promises = [selectCommentsByArticleID(article_id), selectArticleByID(article_id)];
+
+    Promise.all(promises)
+        .then(([comments]) =>
         {
             response.status(200).send({ comments });
         })
