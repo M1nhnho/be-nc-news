@@ -1,15 +1,22 @@
 const db = require('../db/connection.js');
+const { checkExists } = require('../utils/checkExists.js');
 
 exports.selectCommentsByArticleID = (articleID) =>
 {
-    return db.query(
+    const promises =
+    [
+        db.query(
             `SELECT *
                 FROM comments
                 WHERE article_id = $1
                 ORDER BY created_at DESC;`,
             [articleID]
-        )
-        .then(({ rows }) =>
+        ),
+        checkExists('articles', 'article_id', articleID)
+    ];
+
+    return Promise.all(promises)
+        .then(([{ rows }]) =>
         {
             return rows;
         });
