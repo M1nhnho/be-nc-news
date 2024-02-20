@@ -80,7 +80,7 @@ describe('/api/articles', () =>
     {
         describe('GET', () =>
         {
-            test("STATUS 200 - Responds with an article object of the requested ID.", () =>
+            test("STATUS 200 - Responds with the article object of the requested ID.", () =>
             {
                 return request(app)
                     .get('/api/articles/1')
@@ -123,6 +123,99 @@ describe('/api/articles', () =>
                     });
             });
         });
+
+        describe('PATCH', () =>
+        {
+            test("STATUS 200 - Responds with the updated article object of the requested ID with the INcremented 'votes'.", () =>
+            {
+                return request(app)
+                    .patch('/api/articles/1')
+                    .send({ inc_votes: 1 })
+                    .expect(200)
+                    .then(({ body: { article } }) =>
+                    {
+                        expect(article).toMatchObject(
+                            {
+                                article_id: 1,
+                                title: "Living in the shadow of a great man",
+                                topic: "mitch",
+                                author: "butter_bridge",
+                                body: "I find this existence challenging",
+                                created_at: "2020-07-09T20:11:00.000Z",
+                                votes: 101, // <-- Main focus here
+                                article_img_url:
+                                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                            }
+                        );
+                    });
+            });
+            test("STATUS 200 - Responds with the updated article object of the requested ID with the DEcremented 'votes'.", () =>
+            {
+                return request(app)
+                    .patch('/api/articles/1')
+                    .send({ inc_votes: -100 })
+                    .expect(200)
+                    .then(({ body: { article } }) =>
+                    {
+                        expect(article).toMatchObject(
+                            {
+                                article_id: 1,
+                                title: "Living in the shadow of a great man",
+                                topic: "mitch",
+                                author: "butter_bridge",
+                                body: "I find this existence challenging",
+                                created_at: "2020-07-09T20:11:00.000Z",
+                                votes: 0, // <-- Main focus here
+                                article_img_url:
+                                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                            }
+                        );
+                    });
+            });
+            test("STATUS 404 - Responds with 'Not Found' when requested with a valid but non-existent ID.", () =>
+            {
+                return request(app)
+                    .patch('/api/articles/999999')
+                    .send({ inc_votes: 1 })
+                    .expect(404)
+                    .then(({ body: { msg } }) =>
+                    {
+                        expect(msg).toBe('Not Found');
+                    });
+            });
+            test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid ID.", () =>
+            {
+                return request(app)
+                    .patch('/api/articles/not_a_number')
+                    .send({ inc_votes: 1 })
+                    .expect(400)
+                    .then(({ body: { msg } }) =>
+                    {
+                        expect(msg).toBe('Bad Request');
+                    });
+            });
+            test("STATUS 400 - Responds with 'Bad Request' when patched object is missing required property.", () => {
+                return request(app)
+                    .patch('/api/articles/1')
+                    .send({})
+                    .expect(400)
+                    .then(({ body: { msg } }) =>
+                    {
+                        expect(msg).toBe('Bad Request');
+                    });
+            });
+            test("STATUS 400 - Responds with 'Bad Request' when posted object has an invalid property value.", () => {
+                return request(app)
+                    .patch('/api/articles/1')
+                    .send({ inc_votes: 'not_a_number' })
+                    .expect(400)
+                    .then(({ body: { msg } }) =>
+                    {
+                        expect(msg).toBe('Bad Request');
+                    });
+            });
+        });
+
 
         describe('/comments', () =>
         {

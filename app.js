@@ -1,7 +1,7 @@
 const express = require('express');
 const { getAPIEndpoints } = require('./controllers/api.controller.js');
 const { getTopics } = require('./controllers/topics.controller.js');
-const { getArticleByID, getArticles } = require('./controllers/articles.controller.js');
+const { getArticleByID, getArticles, patchArticleByID } = require('./controllers/articles.controller.js');
 const { getCommentsByArticleID, postCommentAtArticleID } = require('./controllers/comments.controller.js');
 const { handlePSQLErrors, handleCustomErrors, handleServerErrors } = require('./errors');
 
@@ -19,6 +19,7 @@ app.get('/api/topics', getTopics);
 // Articles
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleByID);
+app.patch('/api/articles/:article_id', patchArticleByID);
 
 // Comments
 app.get('/api/articles/:article_id/comments', getCommentsByArticleID);
