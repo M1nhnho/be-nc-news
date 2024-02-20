@@ -3,7 +3,7 @@ const { getAPIEndpoints } = require('./controllers/api.controller.js');
 const { getTopics } = require('./controllers/topics.controller.js');
 const { getArticleByID, getArticles, patchArticleByID } = require('./controllers/articles.controller.js');
 const { getCommentsByArticleID, postCommentAtArticleID } = require('./controllers/comments.controller.js');
-const { handlePSQLErrors, handleCustomErrors, handleServerErrors } = require('./errors');
+const { handleEndpointErrors, handlePSQLErrors, handleCustomErrors, handleServerErrors } = require('./errors');
 
 
 const app = express();
@@ -27,8 +27,11 @@ app.post('/api/articles/:article_id/comments', postCommentAtArticleID);
 
 
 // --- ERROR HANDLING ---
+app.all('/*', handleEndpointErrors);
+
 app.use(handlePSQLErrors);
 app.use(handleCustomErrors);
 app.use(handleServerErrors);
+
 
 module.exports = app;
