@@ -14,7 +14,7 @@ if (ENV === 'production')
     config.max = 2;
 }
 
-if (!process.env.PGDATABASE && !process.env.DATABASE.URL)
+if (!process.env.PGDATABASE && !process.env.DATABASE_URL)
 {
     throw new Error('PGDATABASE not set or DATABASE_URL not set');
 }
