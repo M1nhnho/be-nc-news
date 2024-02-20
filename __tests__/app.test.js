@@ -40,8 +40,8 @@ describe('/api', () =>
                         expect(topics).toHaveLength(3);
                         topics.forEach(({ slug, description }) =>
                         {
-                            expect(typeof slug).toBeString();
-                            expect(typeof description).toBeString();
+                            expect(slug).toBeString();
+                            expect(description).toBeString();
                         });
                     });
             });
@@ -378,6 +378,30 @@ describe('/api', () =>
                             expect(msg).toBe('Bad Request');
                         });
                 });
+            });
+        });
+    });
+
+
+    describe('/users', () =>
+    {
+        describe('GET', () =>
+        {
+            test("STATUS 200 - Responds with an array of all user objects.", () =>
+            {
+                return request(app)
+                    .get('/api/users')
+                    .expect(200)
+                    .then(({ body: { users } }) =>
+                    {
+                        expect(users).toHaveLength(4);
+                        users.forEach(({ username, name, avatar_url }) =>
+                        {
+                            expect(username).toBeString();
+                            expect(name).toBeString();
+                            expect(avatar_url).toBeString();
+                        });
+                    });
             });
         });
     });
