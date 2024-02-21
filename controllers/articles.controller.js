@@ -1,4 +1,4 @@
-const { selectArticleByID, selectArticles, updateArticleByID } = require("../models/articles.model.js");
+const { selectArticles, selectArticleByID, updateArticleByID } = require("../models/articles.model.js");
 
 exports.getArticles = (request, response, next) =>
 {
