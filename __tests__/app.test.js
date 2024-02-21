@@ -480,6 +480,7 @@ describe('/api', () =>
                             expect(comment).toMatchObject(
                                 {
                                     votes: 17, // <-- Main focus here
+                                    comment_id: 1,
                                     body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
                                     author: "butter_bridge",
                                     article_id: 9,
@@ -499,6 +500,7 @@ describe('/api', () =>
                             expect(comment).toMatchObject(
                                 {
                                     votes: 15, // <-- Main focus here
+                                    comment_id: 1,
                                     body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
                                     author: "butter_bridge",
                                     article_id: 9,
