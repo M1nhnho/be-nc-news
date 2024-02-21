@@ -129,7 +129,7 @@ describe('checkExists()', () =>
     {
         return checkExists('topics', 'slug', 'paper');
     });
-    test("Rejects with error 404 and 'Not Found' when passed a table that does not exist.", () =>
+    test("Rejects with an error when passed a table that does not exist.", () =>
     {
         return checkExists('non_existent', 'slug', 'paper')
         .catch((error) =>
@@ -137,7 +137,7 @@ describe('checkExists()', () =>
             expect().pass(error);
         });
     });
-    test("Rejects with error 404 and 'Not Found' when passed a column that does not exist in the passed table.", () =>
+    test("Rejects with an error when passed a column that does not exist in the passed table.", () =>
     {
         return checkExists('topics', 'non_existent', 'paper')
         .catch((error) =>
@@ -145,7 +145,7 @@ describe('checkExists()', () =>
             expect().pass(error);
         });
     });
-    test("Rejects with error 404 and 'Not Found' when passed a value that does not exist in the passed table's column.", () =>
+    test("Rejects with an error when passed a value that does not exist in the passed table's column.", () =>
     {
         return checkExists('topics', 'slug', 'not_existent')
             .catch((error) =>
