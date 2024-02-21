@@ -2,8 +2,8 @@ const { selectArticleByID, selectArticles, updateArticleByID } = require("../mod
 
 exports.getArticles = (request, response, next) =>
 {
-    const { topic } = request.query;
-    selectArticles(topic)
+    const { topic, sort_by, order } = request.query;
+    selectArticles(topic, sort_by, order)
         .then((articles) =>
         {
             response.status(200).send({ articles });
