@@ -1,20 +1,20 @@
 # Northcoders News API
 As part of *Northcoder's Skills Bootcamp in Software Development*, we were tasked with building a RESTful news API backend which can provide information to my other frontend project. This API will allow clients to access articles, grouped under topics, along with comments and the users behind them - akin to Reddit or similar news services.
 
-This backend project follows the MVC pattern and was built in Javascript using <a src='https://expressjs.com/'>Express</a> to enable easier server routing and error handling. <a src='https://www.postgresql.org/'>PostgreSQL</a> was used for the databases and <a src='https://jestjs.io/'>Jest</a> with <a src='https://www.npmjs.com/package/supertest'>SuperTest</a> for testing.
+This backend project follows the MVC pattern and was built in Javascript using [Express](https://expressjs.com/) to enable easier server routing and error handling. [PostgreSQL](https://www.postgresql.org/) was used for the databases and [Jest](https://jestjs.io/) with [SuperTest](https://www.npmjs.com/package/supertest) for testing.
 
 ## Hosted version
 The hosted version of my backend project can be found here:  
 https://nc-news-452q.onrender.com/api
 
-The online database is hosted via <a src='https://www.elephantsql.com/'>ElephantSQL</a> whereas the API is hosted via <a src='https://render.com/'>Render</a>.
+The online database is hosted via [ElephantSQL](https://www.elephantsql.com/) whereas the API is hosted via [Render](https://render.com/).
 
 ## Local setup
 If you wish to run this backend project locally, ensure you fulfill the requirements below before following the instructions.
 
 ### Minimum Requirements
-- <a src='https://nodejs.org/en/download'>Node.js</a> (v20.11.0)
-- <a src='https://www.postgresql.org/download/'>PostgreSQL</a> (v14.9)
+- [Node.js](https://nodejs.org/en/download) (v20.11.0)
+- [PostgreSQL](https://www.postgresql.org/download/) (v14.9)
 
 ### Instructions
 1. Navigate to the directory you wish to download the repository to
