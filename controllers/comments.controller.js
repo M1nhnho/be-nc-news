@@ -1,4 +1,4 @@
-const { selectCommentsByArticleID, insertCommentAtArticleID, removeCommentByID } = require("../models/comments.model.js");
+const { selectCommentsByArticleID, insertCommentAtArticleID, updateCommentByID, removeCommentByID } = require("../models/comments.model.js");
 const { selectArticleByID } = require("../models/articles.model.js");
 
 exports.getCommentsByArticleID = (request, response, next) =>
@@ -20,6 +20,18 @@ exports.postCommentAtArticleID = (request, response, next) =>
         .then((comment) =>
         {
             response.status(201).send({ comment });
+        })
+        .catch(next);
+};
+
+exports.patchCommentByID = (request, response, next) =>
+{
+    const { inc_votes } = request.body;
+    const { comment_id } = request.params;
+    updateCommentByID(inc_votes, comment_id)
+        .then((comment) =>
+        {
+            response.status(200).send({ comment });
         })
         .catch(next);
 };

@@ -254,13 +254,13 @@ describe('/api', () =>
                         {
                             expect(article).toMatchObject(
                                 {
+                                    votes: 101, // <-- Main focus here
                                     article_id: 1,
                                     title: "Living in the shadow of a great man",
                                     topic: "mitch",
                                     author: "butter_bridge",
                                     body: "I find this existence challenging",
                                     created_at: "2020-07-09T20:11:00.000Z",
-                                    votes: 101, // <-- Main focus here
                                     article_img_url:
                                     "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
                                 }
@@ -277,13 +277,13 @@ describe('/api', () =>
                         {
                             expect(article).toMatchObject(
                                 {
+                                    votes: 0, // <-- Main focus here
                                     article_id: 1,
                                     title: "Living in the shadow of a great man",
                                     topic: "mitch",
                                     author: "butter_bridge",
                                     body: "I find this existence challenging",
                                     created_at: "2020-07-09T20:11:00.000Z",
-                                    votes: 0, // <-- Main focus here
                                     article_img_url:
                                     "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
                                 }
@@ -312,7 +312,7 @@ describe('/api', () =>
                             expect(msg).toBe('Bad Request');
                         });
                 });
-                test("STATUS 400 - Responds with 'Bad Request' when patched object is missing required property.", () => {
+                test("STATUS 400 - Responds with 'Bad Request' when the object sent is missing required property.", () => {
                     return request(app)
                         .patch('/api/articles/1')
                         .send({})
@@ -322,7 +322,7 @@ describe('/api', () =>
                             expect(msg).toBe('Bad Request');
                         });
                 });
-                test("STATUS 400 - Responds with 'Bad Request' when patched object has an invalid property value.", () => {
+                test("STATUS 400 - Responds with 'Bad Request' when the object sent has an invalid property value.", () => {
                     return request(app)
                         .patch('/api/articles/1')
                         .send({ inc_votes: 'not_a_number' })
@@ -393,7 +393,7 @@ describe('/api', () =>
     
                 describe('POST', () =>
                 {
-                    test("STATUS 201 - Responds with the posted comment object.", () =>
+                    test("STATUS 201 - Responds with the new comment object.", () =>
                     {
                         return request(app)
                             .post('/api/articles/1/comments')
@@ -435,7 +435,7 @@ describe('/api', () =>
                                 expect(msg).toBe('Bad Request');
                             });
                     });
-                    test("STATUS 404 - Responds with 'Not Found' when posted object has a non-existent username.", () =>
+                    test("STATUS 404 - Responds with 'Not Found' when the object sent has a non-existent username.", () =>
                     {
                         return request(app)
                             .post('/api/articles/1/comments')
@@ -446,7 +446,7 @@ describe('/api', () =>
                                 expect(msg).toBe('Not Found');
                             });
                     });
-                    test("STATUS 400 - Responds with 'Bad Request' when posted object is missing required properties.", () =>
+                    test("STATUS 400 - Responds with 'Bad Request' when the object sent is missing required properties.", () =>
                     {
                         return request(app)
                             .post('/api/articles/1/comments')
@@ -467,6 +467,92 @@ describe('/api', () =>
     {
         describe('/:comment_id', () =>
         {
+            describe('PATCH', () =>
+            {
+                test("STATUS 200 - Responds with the updated comment object of the requested ID with the INcremented 'votes'.", () =>
+                {
+                    return request(app)
+                        .patch('/api/comments/1')
+                        .send({ inc_votes: 1 })
+                        .expect(200)
+                        .then(({ body: { comment } }) =>
+                        {
+                            expect(comment).toMatchObject(
+                                {
+                                    votes: 17, // <-- Main focus here
+                                    comment_id: 1,
+                                    body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+                                    author: "butter_bridge",
+                                    article_id: 9,
+                                    created_at: "2020-04-06T12:17:00.000Z"
+                                }
+                            );
+                        });
+                });
+                test("STATUS 200 - Responds with the updated comment object of the requested ID with the DEcremented 'votes'.", () =>
+                {
+                    return request(app)
+                        .patch('/api/comments/1')
+                        .send({ inc_votes: -1 })
+                        .expect(200)
+                        .then(({ body: { comment } }) =>
+                        {
+                            expect(comment).toMatchObject(
+                                {
+                                    votes: 15, // <-- Main focus here
+                                    comment_id: 1,
+                                    body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+                                    author: "butter_bridge",
+                                    article_id: 9,
+                                    created_at: "2020-04-06T12:17:00.000Z"
+                                }
+                            );
+                        });
+                });
+                test("STATUS 404 - Responds with 'Not Found' when requested with a valid but non-existent ID.", () =>
+                {
+                    return request(app)
+                        .patch('/api/comments/999999')
+                        .send({ inc_votes: 1 })
+                        .expect(404)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Not Found');
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid ID.", () =>
+                {
+                    return request(app)
+                        .patch('/api/comments/not_a_number')
+                        .send({ inc_votes: 1 })
+                        .expect(400)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Bad Request');
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when the object sent is missing required property.", () => {
+                    return request(app)
+                        .patch('/api/comments/1')
+                        .send({})
+                        .expect(400)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Bad Request');
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when the object sent has an invalid property value.", () => {
+                    return request(app)
+                        .patch('/api/comments/1')
+                        .send({ inc_votes: 'not_a_number' })
+                        .expect(400)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Bad Request');
+                        });
+                });
+            });
+
             describe('DELETE', () =>
             {
                 test('STATUS 204 - Responds with only the status code and no content.', () =>

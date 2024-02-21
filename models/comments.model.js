@@ -38,6 +38,25 @@ exports.insertCommentAtArticleID = (username, body, articleID) =>
         });
 };
 
+exports.updateCommentByID = (incVotes, commentID) =>
+{
+    return db.query(
+            `UPDATE comments
+                SET votes = votes + $1
+                WHERE comment_id = $2
+                RETURNING *;`,
+            [incVotes, commentID]
+        )
+        .then(({ rows }) =>
+        {
+            if (rows.length === 0)
+            {
+                return Promise.reject({ status: 404, msg: 'Not Found' });
+            }
+            return rows[0];
+        });
+};
+
 exports.removeCommentByID = (commentID) =>
 {
     return db.query(
