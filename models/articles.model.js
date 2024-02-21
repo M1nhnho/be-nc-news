@@ -1,21 +1,26 @@
 const db = require('../db/connection.js');
 const { checkExists } = require('../utils/checkExists.js');
+const format = require('pg-format');
 
-
-exports.selectArticles = (topicValue = '%') =>
+exports.selectArticles = (topicValue = '%', sortBy = 'created_at', order = 'DESC') =>
 {
-    const promises =
-    [
-        db.query(
-            `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count
-                FROM articles LEFT JOIN comments
-                    ON articles.article_id = comments.article_id
-                WHERE articles.topic LIKE $1
-                GROUP BY articles.article_id
-                ORDER BY articles.created_at DESC;`,
-            [topicValue]
-        )
-    ];
+    // Order whitelist
+    const validOrders = ['ASC', 'DESC'];
+    if (!validOrders.includes(order.toUpperCase()))
+    {
+        return Promise.reject({ status: 400, msg: 'Bad Request' });
+    }
+
+    const queryString = format(
+        `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count
+            FROM articles LEFT JOIN comments
+                ON articles.article_id = comments.article_id
+            WHERE articles.topic LIKE %L
+            GROUP BY articles.article_id
+            ORDER BY %I %s;`,
+        topicValue, sortBy, order
+    )
+    const promises = [db.query(queryString)];
 
     if (topicValue !== '%')
     {   // If there is a topic query, check topic exists
