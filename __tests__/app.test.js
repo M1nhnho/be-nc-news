@@ -53,7 +53,7 @@ describe('/api', () =>
     {
         describe('GET', () =>
         {
-            test('STATUS 200 - Responds with: an array of the top 10 (default) article objects sorted by most recent (default); and the total number of articles.', () =>
+            test("STATUS 200 - Responds with: an array of the top 10 most recent (default) article objects; and the total number of articles.", () =>
             {
                 return request(app)
                     .get('/api/articles')
@@ -80,7 +80,7 @@ describe('/api', () =>
 
             describe('?topic=:topic', () =>
             {
-                test('STATUS 200 - Responds with: an array of the top 10 (default) article objects of the queried topic sorted by most recent (default); and the number of matched articles.', () =>
+                test("STATUS 200 - Responds with: an array of the top 10 most recent (default) article objects of the queried topic; and the number of matched articles.", () =>
                 {
                     return request(app)
                         .get('/api/articles?topic=mitch')
@@ -104,7 +104,7 @@ describe('/api', () =>
                             expect(total_count).toBe(12);
                         });
                 });
-                test('STATUS 200 - Responds with: an empty array when there are no article objects of the queried topic; and 0.', () =>
+                test("STATUS 200 - Responds with: an empty array when there are no article objects of the queried topic; and 0.", () =>
                 {
                     return request(app)
                         .get('/api/articles?topic=paper')
@@ -129,7 +129,7 @@ describe('/api', () =>
             });
             describe('?sort_by=:sort_by', () =>
             {
-                test('STATUS 200 - Responds with: an array of the top 10 (default) article objects sorted by the queried sort_by in descending order (default); and the total number of articles.', () =>
+                test("STATUS 200 - Responds with: an array of the top 10 (default) article objects sorted by the queried sort_by; and the total number of articles.", () =>
                 {
                     return request(app)
                         .get('/api/articles?sort_by=title')
@@ -166,7 +166,7 @@ describe('/api', () =>
             });
             describe('?order=:order', () =>
             {
-                test('STATUS 200 - Responds with: an array of the top 10 (default) article objects sorted by date (default) in the queried order; and the total number of articles.', () =>
+                test("STATUS 200 - Responds with: an array of the bottom/top 10 most recent (default) article objects depending on the queried order; and the total number of articles.", () =>
                 {
                     return request(app)
                         .get('/api/articles?order=asc')
@@ -203,7 +203,7 @@ describe('/api', () =>
             });
             describe('?limit=:limit', () =>
             {
-                test('STATUS 200 - Responds with: an array of the top article objects by the queried limit sorted by most recent (default); and the total number of articles.', () =>
+                test("STATUS 200 - Responds with: an array of the top most recent (default) article objects by the queried limit; and the total number of articles.", () =>
                 {
                     return request(app)
                         .get('/api/articles?limit=5')
@@ -227,7 +227,7 @@ describe('/api', () =>
                             expect(total_count).toBe(13);
                         });
                 });
-                test('STATUS 200 - Responds with: an array of all article objects sorted by most recent (default) when queried limit is bigger than the array\'s length; and the total number of articles.', () =>
+                test("STATUS 200 - Responds with: an array of all article objects by most recent (default) when queried limit is bigger than the array's length; and the total number of articles.", () =>
                 {
                     return request(app)
                         .get('/api/articles?limit=999999')
@@ -264,7 +264,7 @@ describe('/api', () =>
             });
             describe('?p=:p', () =>
             {
-                test('STATUS 200 - Responds with: an array of the queried page of 10 (default) article objects sorted by most recent (default); and the total number of articles.', () =>
+                test("STATUS 200 - Responds with: an array of the queried page of the 10 most recent (default) article objects; and the total number of articles.", () =>
                 {
                     return request(app)
                         .get('/api/articles?p=2')
@@ -581,14 +581,14 @@ describe('/api', () =>
             {
                 describe('GET', () =>
                 {
-                    test("STATUS 200 - Responds with an array of all comment objects (sorted by most recent by default) from the article object of the requested ID.", () =>
+                    test("STATUS 200 - Responds with: an array of the requested article's top 10 most recent (default) comment objects; and the total count of the article\'s comments.", () =>
                     {
                         return request(app)
                             .get('/api/articles/1/comments')
                             .expect(200)
-                            .then(({ body: { comments } }) =>
+                            .then(({ body: { comments, total_count } }) =>
                             {
-                                expect(comments).toHaveLength(11);
+                                expect(comments).toHaveLength(10);
                                 comments.forEach(({ comment_id, votes, created_at, author, body, article_id }) =>
                                 {
                                     expect(comment_id).toBeNumber();
@@ -599,9 +599,11 @@ describe('/api', () =>
                                     expect(article_id).toBe(1);
                                 });
                                 expect(comments).toBeSortedBy('created_at', {descending: true});
+
+                                expect(total_count).toBe(11);
                             });
                     });
-                    test("STATUS 200 - Responds with an empty array when the article object of the requested ID has no comments.", () =>
+                    test("STATUS 200 - Responds with: an empty array when the requested article has no comments; and 0.", () =>
                     {
                         return request(app)
                             .get('/api/articles/11/comments')
@@ -631,6 +633,109 @@ describe('/api', () =>
                             {
                                 expect(msg).toBe('Bad Request');
                             });
+                    });
+
+                    describe('?limit=:limit', () =>
+                    {
+                        test("STATUS 200 - Responds with: an array of the requested article's top most recent (default) comment objects by the queried limit; and the total count of the article's comments.", () =>
+                        {
+                            return request(app)
+                                .get('/api/articles/1/comments?limit=5')
+                                .expect(200)
+                                .then(({ body: { comments, total_count } }) =>
+                                {
+                                    expect(comments).toHaveLength(5);
+                                    comments.forEach(({ comment_id, votes, created_at, author, body, article_id }) =>
+                                    {
+                                        expect(comment_id).toBeNumber();
+                                        expect(votes).toBeNumber();
+                                        expect(created_at).toBeString();
+                                        expect(author).toBeString();
+                                        expect(body).toBeString();
+                                        expect(article_id).toBe(1);
+                                    });
+                                    expect(comments).toBeSortedBy('created_at', {descending: true});
+
+                                    expect(total_count).toBe(11);
+                                });
+                        });
+                        test("STATUS 200 - Responds with: an array of all the requested article's most recent (default) comment objects when queried limit is bigger than the array's length; and the total count of the article's comments.", () =>
+                        {
+                            return request(app)
+                                .get('/api/articles/1/comments?limit=999999')
+                                .expect(200)
+                                .then(({ body: { comments, total_count } }) =>
+                                {
+                                    expect(comments).toHaveLength(11);
+                                    comments.forEach(({ comment_id, votes, created_at, author, body, article_id }) =>
+                                    {
+                                        expect(comment_id).toBeNumber();
+                                        expect(votes).toBeNumber();
+                                        expect(created_at).toBeString();
+                                        expect(author).toBeString();
+                                        expect(body).toBeString();
+                                        expect(article_id).toBe(1);
+                                    });
+                                    expect(comments).toBeSortedBy('created_at', {descending: true});
+
+                                    expect(total_count).toBe(11);
+                                });
+                        });
+                        test("STATUS 400 - Responds with 'Bad Request' when queried with an invalid limit (must be a number).", () =>
+                        {
+                            return request(app)
+                                .get('/api/articles/1/comments?limit=not_a_number')
+                                .expect(400)
+                                .then(({ body: { msg } }) =>
+                                {
+                                    expect(msg).toBe('Bad Request');
+                                });
+                        });
+                    });
+                    describe('?p=:p', () =>
+                    {
+                        test("STATUS 200 - Responds with: an array of the queried page of the requested article's 10 most recent (default) comment objects; and the total number of articles.", () =>
+                        {
+                            return request(app)
+                                .get('/api/articles/1/comments?p=2')
+                                .expect(200)
+                                .then(({ body: { comments, total_count } }) =>
+                                {
+                                    expect(comments).toHaveLength(1);
+                                    comments.forEach(({ comment_id, votes, created_at, author, body, article_id }) =>
+                                    {
+                                        expect(comment_id).toBeNumber();
+                                        expect(votes).toBeNumber();
+                                        expect(created_at).toBeString();
+                                        expect(author).toBeString();
+                                        expect(body).toBeString();
+                                        expect(article_id).toBe(1);
+                                    });
+                                    expect(comments).toBeSortedBy('created_at', {descending: true});
+
+                                    expect(total_count).toBe(11);
+                                });
+                        });
+                        test("STATUS 404 - Responds with 'Not Found' when queried with a valid but non-existent page (out of range).", () =>
+                        {
+                            return request(app)
+                                .get('/api/articles/1/comments?p=999999')
+                                .expect(404)
+                                .then(({ body: { msg } }) =>
+                                {
+                                    expect(msg).toBe('Not Found');
+                                });
+                        });
+                        test("STATUS 400 - Responds with 'Bad Request' when queried with an invalid page (must be a number).", () =>
+                        {
+                            return request(app)
+                                .get('/api/articles/1/comments?p=not_a_number')
+                                .expect(400)
+                                .then(({ body: { msg } }) =>
+                                {
+                                    expect(msg).toBe('Bad Request');
+                                });
+                        });
                     });
                 });
     
@@ -798,7 +903,7 @@ describe('/api', () =>
 
             describe('DELETE', () =>
             {
-                test('STATUS 204 - Responds with only the status code and no content.', () =>
+                test("STATUS 204 - Responds with only the status code and no content.", () =>
                 {
                     return request(app)
                         .delete('/api/comments/1')

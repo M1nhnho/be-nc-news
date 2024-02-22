@@ -1,24 +1,33 @@
 const db = require('../db/connection.js');
 const { checkExists } = require('../utils/checkExists.js');
 
-exports.selectCommentsByArticleID = (articleID) =>
+exports.selectCommentsByArticleID = (articleID, limit = 10, page = 1) =>
 {
+    const offset = (page-1) * limit;
+    const queryString =
+        `SELECT *
+            FROM comments
+            WHERE article_id = $1
+            ORDER BY created_at DESC `;
+
     const promises =
     [
-        db.query(
-            `SELECT *
-                FROM comments
-                WHERE article_id = $1
-                ORDER BY created_at DESC;`,
-            [articleID]
-        ),
+        db.query(queryString, [articleID]),
+        db.query(queryString + `LIMIT $2 OFFSET $3;`, [articleID, limit, offset]),
         checkExists('articles', 'article_id', articleID)
     ];
-
     return Promise.all(promises)
-        .then(([{ rows }]) =>
+        .then(([{ rows: fullRows }, { rows: limitedRows }]) =>
         {
-            return rows;
+            if (fullRows.length === 0)
+            {   // Ignoring pagination, check if a query results in no matches (only topic at the moment results in this behaviour)
+                return [limitedRows, 0];
+            }
+            else if (limitedRows.length === 0)
+            {   // Otherwise, there are matches so check if the queried page is empty
+                return Promise.reject({ status: 404, msg: 'Not Found' });
+            }
+            return [limitedRows, fullRows.length];
         });
 };
 

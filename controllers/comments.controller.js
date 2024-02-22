@@ -4,10 +4,11 @@ const { selectArticleByID } = require("../models/articles.model.js");
 exports.getCommentsByArticleID = (request, response, next) =>
 {
     const { article_id } = request.params;
-    selectCommentsByArticleID(article_id)
-        .then((comments) =>
+    const { limit, p } = request.query;
+    selectCommentsByArticleID(article_id, limit, p)
+        .then(([comments, total_count]) =>
         {
-            response.status(200).send({ comments });
+            response.status(200).send({ comments, total_count });
         })
         .catch(next);
 };
