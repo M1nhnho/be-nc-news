@@ -2,7 +2,7 @@ const db = require('../db/connection.js');
 const { checkExists } = require('../utils/checkExists.js');
 const format = require('pg-format');
 
-exports.selectArticles = (topicValue = '%', sortBy = 'created_at', order = 'DESC') =>
+exports.selectArticles = (topicValue = '%', sortBy = 'created_at', order = 'DESC', limit = 10, page = 1) =>
 {
     // Order whitelist
     const validOrders = ['ASC', 'DESC'];
@@ -10,17 +10,19 @@ exports.selectArticles = (topicValue = '%', sortBy = 'created_at', order = 'DESC
     {
         return Promise.reject({ status: 400, msg: 'Bad Request' });
     }
+    const offset = (page-1) * limit;
 
-    const queryString = format(
+    const queryString =
         `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count
             FROM articles LEFT JOIN comments
                 ON articles.article_id = comments.article_id
             WHERE articles.topic LIKE %L
             GROUP BY articles.article_id
-            ORDER BY %I %s;`,
-        topicValue, sortBy, order
-    )
-    const promises = [db.query(queryString)];
+            ORDER BY %I %s `;
+    const selectQueryString = format(queryString, topicValue, sortBy, order);
+    const limitQueryString = format(queryString + `LIMIT %L OFFSET %L;`, topicValue, sortBy, order, limit, offset);
+
+    const promises = [db.query(selectQueryString), db.query(limitQueryString)];
 
     if (topicValue !== '%')
     {   // If there is a topic query, check topic exists
@@ -28,9 +30,17 @@ exports.selectArticles = (topicValue = '%', sortBy = 'created_at', order = 'DESC
     }
 
     return Promise.all(promises)
-        .then(([{ rows }]) =>
+        .then(([{ rows: fullRows }, { rows: limitedRows }]) =>
         {
-            return rows;
+            if (fullRows.length === 0)
+            {   // Ignoring pagination, check if a query results in no matches (only topic at the moment results in this behaviour)
+                return [limitedRows, 0];
+            }
+            else if (limitedRows.length === 0)
+            {   // Otherwise, there are matches so check if the queried page is empty
+                return Promise.reject({ status: 404, msg: 'Not Found' });
+            }
+            return [limitedRows, fullRows.length];
         });
 };
 

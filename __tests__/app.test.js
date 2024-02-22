@@ -53,14 +53,14 @@ describe('/api', () =>
     {
         describe('GET', () =>
         {
-            test('STATUS 200 - Responds with an array of all article objects sorted by most recent by default.', () =>
+            test('STATUS 200 - Responds with: an array of the top 10 (default) article objects sorted by most recent (default); and the total number of articles.', () =>
             {
                 return request(app)
                     .get('/api/articles')
                     .expect(200)
-                    .then(({ body: { articles } }) =>
+                    .then(({ body: { articles, total_count } }) =>
                     {
-                        expect(articles).toHaveLength(13);
+                        expect(articles).toHaveLength(10);
                         articles.forEach(({ author, title, article_id, topic, created_at, votes, article_img_url, comment_count }) =>
                         {
                             expect(author).toBeString();
@@ -73,19 +73,21 @@ describe('/api', () =>
                             expect(comment_count).toBeNumber();
                         });
                         expect(articles).toBeSortedBy('created_at', {descending: true});
+                        
+                        expect(total_count).toBe(13);
                     });
             });
 
             describe('?topic=:topic', () =>
             {
-                test('STATUS 200 - Responds with an array of all article objects of the queried topic sorted by most recent by default.', () =>
+                test('STATUS 200 - Responds with: an array of the top 10 (default) article objects of the queried topic sorted by most recent (default); and the number of matched articles.', () =>
                 {
                     return request(app)
                         .get('/api/articles?topic=mitch')
                         .expect(200)
-                        .then(({ body: { articles } }) =>
+                        .then(({ body: { articles, total_count } }) =>
                         {
-                            expect(articles).toHaveLength(12);
+                            expect(articles).toHaveLength(10);
                             articles.forEach(({ author, title, article_id, topic, created_at, votes, article_img_url, comment_count }) =>
                             {
                                 expect(author).toBeString();
@@ -98,19 +100,23 @@ describe('/api', () =>
                                 expect(comment_count).toBeNumber();
                             });
                             expect(articles).toBeSortedBy('created_at', {descending: true});
+                            
+                            expect(total_count).toBe(12);
                         });
                 });
-                test('STATUS 200 - Responds with an empty array when there are no article objects of the queried topic.', () =>
+                test('STATUS 200 - Responds with: an empty array when there are no article objects of the queried topic; and 0.', () =>
                 {
                     return request(app)
                         .get('/api/articles?topic=paper')
                         .expect(200)
-                        .then(({ body: { articles } }) =>
+                        .then(({ body: { articles, total_count } }) =>
                         {
+                            expect(articles).toBeArray();
                             expect(articles).toHaveLength(0);
+                            expect(total_count).toBe(0);
                         });
                 });
-                test("STATUS 404 - Responds with 'Not Found' when queried with an valid but non-existent topic.", () =>
+                test("STATUS 404 - Responds with 'Not Found' when queried with a valid but non-existent topic.", () =>
                 {
                     return request(app)
                         .get('/api/articles?topic=not_an_existing_topic')
@@ -123,14 +129,14 @@ describe('/api', () =>
             });
             describe('?sort_by=:sort_by', () =>
             {
-                test('STATUS 200 - Responds with an array of all article objects sorted by the queried sort_by in descending order by default.', () =>
+                test('STATUS 200 - Responds with: an array of the top 10 (default) article objects sorted by the queried sort_by in descending order (default); and the total number of articles.', () =>
                 {
                     return request(app)
                         .get('/api/articles?sort_by=title')
                         .expect(200)
-                        .then(({ body: { articles } }) =>
+                        .then(({ body: { articles, total_count } }) =>
                         {
-                            expect(articles).toHaveLength(13);
+                            expect(articles).toHaveLength(10);
                             articles.forEach(({ author, title, article_id, topic, created_at, votes, article_img_url, comment_count }) =>
                             {
                                 expect(author).toBeString();
@@ -143,6 +149,8 @@ describe('/api', () =>
                                 expect(comment_count).toBeNumber();
                             });
                             expect(articles).toBeSortedBy('title', {descending: true});
+                            
+                            expect(total_count).toBe(13);
                         });
                 });
                 test("STATUS 400 - Responds with 'Bad Request' when queried with an invalid sort_by (column does not exist).", () =>
@@ -158,12 +166,73 @@ describe('/api', () =>
             });
             describe('?order=:order', () =>
             {
-                test('STATUS 200 - Responds with an array of all article objects sorted by date by default in the queried order.', () =>
+                test('STATUS 200 - Responds with: an array of the top 10 (default) article objects sorted by date (default) in the queried order; and the total number of articles.', () =>
                 {
                     return request(app)
                         .get('/api/articles?order=asc')
                         .expect(200)
-                        .then(({ body: { articles } }) =>
+                        .then(({ body: { articles, total_count } }) =>
+                        {
+                            expect(articles).toHaveLength(10);
+                            articles.forEach(({ author, title, article_id, topic, created_at, votes, article_img_url, comment_count }) =>
+                            {
+                                expect(author).toBeString();
+                                expect(title).toBeString();
+                                expect(article_id).toBeNumber();
+                                expect(topic).toBeString();
+                                expect(created_at).toBeString();
+                                expect(votes).toBeNumber();
+                                expect(article_img_url).toBeString();
+                                expect(comment_count).toBeNumber();
+                            });
+                            expect(articles).toBeSortedBy('created_at', {descending: false});
+                            
+                            expect(total_count).toBe(13);
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when queried with an invalid order (must be 'asc' or 'desc').", () =>
+                {
+                    return request(app)
+                        .get('/api/articles?order=neither_asc_nor_desc')
+                        .expect(400)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Bad Request');
+                        });
+                });
+            });
+            describe('?limit=:limit', () =>
+            {
+                test('STATUS 200 - Responds with: an array of the top article objects by the queried limit sorted by most recent (default); and the total number of articles.', () =>
+                {
+                    return request(app)
+                        .get('/api/articles?limit=5')
+                        .expect(200)
+                        .then(({ body: { articles, total_count } }) =>
+                        {
+                            expect(articles).toHaveLength(5);
+                            articles.forEach(({ author, title, article_id, topic, created_at, votes, article_img_url, comment_count }) =>
+                            {
+                                expect(author).toBeString();
+                                expect(title).toBeString();
+                                expect(article_id).toBeNumber();
+                                expect(topic).toBeString();
+                                expect(created_at).toBeString();
+                                expect(votes).toBeNumber();
+                                expect(article_img_url).toBeString();
+                                expect(comment_count).toBeNumber();
+                            });
+                            expect(articles).toBeSortedBy('created_at', {descending: true});
+                            
+                            expect(total_count).toBe(13);
+                        });
+                });
+                test('STATUS 200 - Responds with: an array of all article objects sorted by most recent (default) when queried limit is bigger than the array\'s length; and the total number of articles.', () =>
+                {
+                    return request(app)
+                        .get('/api/articles?limit=999999')
+                        .expect(200)
+                        .then(({ body: { articles, total_count } }) =>
                         {
                             expect(articles).toHaveLength(13);
                             articles.forEach(({ author, title, article_id, topic, created_at, votes, article_img_url, comment_count }) =>
@@ -177,13 +246,62 @@ describe('/api', () =>
                                 expect(article_img_url).toBeString();
                                 expect(comment_count).toBeNumber();
                             });
-                            expect(articles).toBeSortedBy('created_at', {descending: false});
+                            expect(articles).toBeSortedBy('created_at', {descending: true});
+
+                            expect(total_count).toBe(13);
                         });
                 });
-                test("STATUS 400 - Responds with 'Bad Request' when queried with an invalid order (must be 'asc' or 'desc').", () =>
+                test("STATUS 400 - Responds with 'Bad Request' when queried with an invalid limit (must be a number).", () =>
                 {
                     return request(app)
-                        .get('/api/articles?order=neither_asc_nor_desc')
+                        .get('/api/articles?limit=not_a_number')
+                        .expect(400)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Bad Request');
+                        });
+                });
+            });
+            describe('?p=:p', () =>
+            {
+                test('STATUS 200 - Responds with: an array of the queried page of 10 (default) article objects sorted by most recent (default); and the total number of articles.', () =>
+                {
+                    return request(app)
+                        .get('/api/articles?p=2')
+                        .expect(200)
+                        .then(({ body: { articles, total_count } }) =>
+                        {
+                            expect(articles).toHaveLength(3);
+                            articles.forEach(({ author, title, article_id, topic, created_at, votes, article_img_url, comment_count }) =>
+                            {
+                                expect(author).toBeString();
+                                expect(title).toBeString();
+                                expect(article_id).toBeNumber();
+                                expect(topic).toBeString();
+                                expect(created_at).toBeString();
+                                expect(votes).toBeNumber();
+                                expect(article_img_url).toBeString();
+                                expect(comment_count).toBeNumber();
+                            });
+                            expect(articles).toBeSortedBy('created_at', {descending: true});
+                            
+                            expect(total_count).toBe(13);
+                        });
+                });
+                test("STATUS 404 - Responds with 'Not Found' when queried with a valid but non-existent page (out of range).", () =>
+                {
+                    return request(app)
+                        .get('/api/articles?p=999999')
+                        .expect(404)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Not Found');
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when queried with an invalid page (must be a number).", () =>
+                {
+                    return request(app)
+                        .get('/api/articles?p=not_a_number')
                         .expect(400)
                         .then(({ body: { msg } }) =>
                         {
@@ -490,6 +608,7 @@ describe('/api', () =>
                             .expect(200) // Either 200 or 204 works but opted for 200 in that something does get returned, it's just empty
                             .then(({ body: { comments } }) =>
                             {
+                                expect(comments).toBeArray();
                                 expect(comments).toHaveLength(0);
                             });
                     });
