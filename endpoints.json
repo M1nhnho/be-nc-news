@@ -36,6 +36,37 @@
         }
     },
 
+    "POST /api/articles":
+    {
+        "description": "Sends an article to the database.",
+        "queries": [],
+        "requestBodyFormat":
+        {
+            "author": "<string of any existing user>",
+            "title": "<any string>",
+            "body": "<any string>",
+            "topic": "<string of any existing topic>",
+            "article_img_url":
+            "<any string> (optional)"
+        },
+        "exampleResponse":
+        {
+            "article":
+            {
+                "author": "butter_bridge",
+                "title": "Welcome!",
+                "article_id": 14,
+                "topic": "mitch",
+                "body": "Welcome to my article!",
+                "created_at": "2024-05-30T15:59:13.341Z",
+                "votes": 0,
+                "article_img_url":
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                "comment_count": 0
+            }
+        }
+    },
+
     "GET /api/articles/:article_id":
     {
         "description": "Serves an object of the requested article.",
@@ -104,13 +135,13 @@
     {
         "description": "Sends a comment to the database.",
         "queries": [],
-        "requestBodyFormat": { "username": "<string of an existing user>", "body": "<any string>" },
+        "requestBodyFormat": { "username": "<string of any existing user>", "body": "<any string>" },
         "exampleResponse":
         {
             "comment":
             {
                 "comment_id": 19,
-                "body": "This is a test comment.",
+                "body": "Amazing!",
                 "article_id": 1,
                 "author": "butter_bridge",
                 "votes": 0,

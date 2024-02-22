@@ -34,6 +34,27 @@ exports.selectArticles = (topicValue = '%', sortBy = 'created_at', order = 'DESC
         });
 };
 
+exports.insertArticle = (requestBody) =>
+{
+    const { author, title, body, topic, article_img_url = 'DEFAULT' } = requestBody;
+    const percentCharacter = article_img_url === 'DEFAULT' ? '%s' : '%L'
+
+    const queryString = format(
+        `INSERT INTO articles
+            (title, topic, author, body, created_at, votes, article_img_url)
+            VALUES
+                (%L, %L, %L, %L, %L, %L, ${percentCharacter})
+            RETURNING *, 0 AS comment_count;`,
+        title, topic, author, body, new Date(Date.now()), 0, article_img_url
+    )
+    
+    return db.query(queryString)
+        .then(({ rows }) =>
+        {
+            return rows[0];
+        });
+};
+
 exports.selectArticleByID = (articleID) =>
 {
     return db.query(

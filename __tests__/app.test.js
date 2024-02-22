@@ -193,6 +193,130 @@ describe('/api', () =>
             });
         });
 
+        describe('POST', () =>
+        {
+            test("STATUS 201 - Responds with the new article object.", () =>
+            {
+                return request(app)
+                    .post('/api/articles')
+                    .send(
+                        {
+                            author: 'butter_bridge',
+                            title: 'Test',
+                            body: 'This is a test body.',
+                            topic: 'mitch',
+                            article_img_url:
+                            'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+                        }
+                    )
+                    .expect(201)
+                    .then(({ body: { article } }) =>
+                    {
+                        expect(article).toMatchObject(
+                            {
+                                article_id: 14,
+                                author: 'butter_bridge',
+                                title: 'Test',
+                                body: 'This is a test body.',
+                                topic: 'mitch',
+                                article_img_url:
+                                'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                                votes: 0,
+                                comment_count: 0
+                            }
+                        );
+                        expect(article.created_at).toBeString(); // Dynamic test - separated due to 'created_at' being the current time of posting
+                    });
+            });
+            test("STATUS 201 - Responds with the new article object with a default 'article_img_url' when not given one.", () =>
+            {
+                return request(app)
+                    .post('/api/articles')
+                    .send(
+                        {
+                            author: 'butter_bridge',
+                            title: 'Test',
+                            body: 'This is a test body.',
+                            topic: 'mitch'
+                        }
+                    )
+                    .expect(201)
+                    .then(({ body: { article } }) =>
+                    {
+                        expect(article).toMatchObject(
+                            {
+                                article_id: 14,
+                                author: 'butter_bridge',
+                                title: 'Test',
+                                body: 'This is a test body.',
+                                topic: 'mitch',
+                                article_img_url:
+                                'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700',
+                                votes: 0,
+                                comment_count: 0
+                            }
+                        );
+                        expect(article.created_at).toBeString(); // Dynamic test - separated due to 'created_at' being the current time of posting
+                    });
+            });
+            test("STATUS 404 - Responds with 'Not Found' when the object sent has a valid but non-existent topic.", () =>
+            {
+                return request(app)
+                    .post('/api/articles')
+                    .send(
+                        {
+                            author: 'butter_bridge',
+                            title: 'Test',
+                            body: 'This is a test body.',
+                            topic: 'not_an_existing_topic', // <-- Main focus here
+                            article_img_url:
+                            'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+                        }
+                    )
+                    .expect(404)
+                    .then(({ body: { msg } }) =>
+                    {
+                        expect(msg).toBe('Not Found');
+                    });
+            });
+            test("STATUS 404 - Responds with 'Not Found' when the object sent has a valid but non-existent author (user).", () =>
+            {
+                return request(app)
+                    .post('/api/articles')
+                    .send(
+                        {
+                            author: 'not_an_existing_user', // <-- Main focus here
+                            title: 'Test',
+                            body: 'This is a test body.',
+                            topic: 'mitch',
+                            article_img_url:
+                            'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+                        }
+                    )
+                    .expect(404)
+                    .then(({ body: { msg } }) =>
+                    {
+                        expect(msg).toBe('Not Found');
+                    });
+            });
+            test("STATUS 400 - Responds with 'Bad Request' when the object sent is missing required properties.", () =>
+            {
+                return request(app)
+                    .post('/api/articles/1/comments')
+                    .send(
+                        {
+                            author: 'butter_bridge',
+                            topic: 'mitch'
+                        }
+                    )
+                    .expect(400)
+                    .then(({ body: { msg } }) =>
+                    {
+                        expect(msg).toBe('Bad Request');
+                    });
+            });
+        });
+
         describe('/:article_id', () =>
         {
             describe('GET', () =>
@@ -435,7 +559,7 @@ describe('/api', () =>
                                 expect(msg).toBe('Bad Request');
                             });
                     });
-                    test("STATUS 404 - Responds with 'Not Found' when the object sent has a non-existent username.", () =>
+                    test("STATUS 404 - Responds with 'Not Found' when the object sent has a valid but non-existent username.", () =>
                     {
                         return request(app)
                             .post('/api/articles/1/comments')
