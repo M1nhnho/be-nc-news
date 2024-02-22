@@ -16,7 +16,7 @@
 
     "GET /api/articles":
     {
-        "description": "Serves an array of all articles.",
+        "description": "Serves an array and count of articles.",
         "queries": ["topic", "sort_by", "order", "limit", "p"],
         "exampleResponse":
         {
@@ -114,8 +114,8 @@
 
     "GET /api/articles/:article_id/comments":
     {
-        "description": "Serves an array of all comments from the requested article.",
-        "queries": [],
+        "description": "Serves an array and count of comments from the requested article.",
+        "queries": ["limit", "p"],
         "exampleResponse":
         {
             "comments":
@@ -128,7 +128,8 @@
                     "votes": 0,
                     "created_at": "2020-01-01T03:08:00.000Z"
                 }
-            ]
+            ],
+            "total_count": 1
         }
     },
 
