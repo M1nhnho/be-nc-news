@@ -53,9 +53,9 @@ exports.insertArticle = (requestBody) =>
         `INSERT INTO articles
             (title, topic, author, body, created_at, votes, article_img_url)
             VALUES
-                (%L, %L, %L, %L, %L, %L, ${percentCharacter})
+                (%L, %L, %L, %L, DEFAULT, DEFAULT, ${percentCharacter})
             RETURNING *, 0 AS comment_count;`,
-        title, topic, author, body, new Date(Date.now()), 0, article_img_url
+        title, topic, author, body, article_img_url
     )
     
     return db.query(queryString)

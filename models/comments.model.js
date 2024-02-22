@@ -31,15 +31,16 @@ exports.selectCommentsByArticleID = (articleID, limit = 10, page = 1) =>
         });
 };
 
-exports.insertCommentAtArticleID = (username, body, articleID) =>
+exports.insertCommentAtArticleID = (requestBody, articleID) =>
 {
+    const { username, body } = requestBody;
     return db.query(
             `INSERT INTO comments
                 (body, author, article_id, votes, created_at)
                 VALUES
-                    ($1, $2, $3, $4, $5)
+                    ($1, $2, $3, DEFAULT, DEFAULT)
                 RETURNING *;`,
-            [body, username, articleID, 0, new Date(Date.now())]
+            [body, username, articleID]
         )
         .then(({ rows }) =>
         {

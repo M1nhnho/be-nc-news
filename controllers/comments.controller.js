@@ -15,9 +15,8 @@ exports.getCommentsByArticleID = (request, response, next) =>
 
 exports.postCommentAtArticleID = (request, response, next) =>
 {
-    const { username, body } = request.body;
     const { article_id } = request.params;
-    insertCommentAtArticleID(username, body, article_id)
+    insertCommentAtArticleID(request.body, article_id)
         .then((comment) =>
         {
             response.status(201).send({ comment });
