@@ -14,6 +14,25 @@
         }
     },
 
+    "POST /api/topics":
+    {
+        "description": "Sends an topic to the database.",
+        "queries": [],
+        "requestBodyFormat":
+        {
+            "slug": "<any string>",
+            "description": "<any string>"
+        },
+        "exampleResponse":
+        {
+            "topic":
+            {
+                "slug": "penguins",
+                "description": "Birds that cannot fly"
+            }
+        }
+    },
+
     "GET /api/articles":
     {
         "description": "Serves an array and count of articles.",

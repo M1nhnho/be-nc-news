@@ -46,6 +46,46 @@ describe('/api', () =>
                     });
             });
         });
+
+        describe('POST', () =>
+        {
+            test("STATUS 201 - Responds with the new topic object.", () =>
+            {
+                return request(app)
+                    .post('/api/topics')
+                    .send(
+                        {
+                            slug: "test",
+                            description: "This is a test description."
+                        }
+                    )
+                    .expect(201)
+                    .then(({ body: { topic } }) =>
+                    {
+                        expect(topic).toMatchObject(
+                            {
+                                slug: "test",
+                                description: "This is a test description."
+                            }
+                        );
+                    });
+            });
+            test("STATUS 400 - Responds with 'Bad Request' when the object sent is missing required properties.", () =>
+            {
+                return request(app)
+                    .post('/api/topics')
+                    .send(
+                        {
+                            slug: "test"
+                        }
+                    )
+                    .expect(400)
+                    .then(({ body: { msg } }) =>
+                    {
+                        expect(msg).toBe('Bad Request');
+                    });
+            });
+        });
     });
 
 
