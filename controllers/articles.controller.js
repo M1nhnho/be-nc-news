@@ -2,11 +2,11 @@ const { selectArticles, insertArticle, selectArticleByID, updateArticleByID } = 
 
 exports.getArticles = (request, response, next) =>
 {
-    const { topic, sort_by, order } = request.query;
-    selectArticles(topic, sort_by, order)
-        .then((articles) =>
+    const { topic, sort_by, order, limit, p } = request.query;
+    selectArticles(topic, sort_by, order, limit, p)
+        .then(([articles, total_count]) =>
         {
-            response.status(200).send({ articles });
+            response.status(200).send({ articles, total_count });
         })
         .catch(next);
 };
