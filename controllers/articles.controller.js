@@ -1,4 +1,4 @@
-const { selectArticles, selectArticleByID, updateArticleByID } = require("../models/articles.model.js");
+const { selectArticles, insertArticle, selectArticleByID, updateArticleByID } = require("../models/articles.model.js");
 
 exports.getArticles = (request, response, next) =>
 {
@@ -7,6 +7,16 @@ exports.getArticles = (request, response, next) =>
         .then((articles) =>
         {
             response.status(200).send({ articles });
+        })
+        .catch(next);
+};
+
+exports.postArticle = (request, response, next) =>
+{
+    insertArticle(request.body)
+        .then((article) =>
+        {
+            response.status(201).send({ article });
         })
         .catch(next);
 };
