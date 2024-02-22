@@ -616,6 +616,36 @@ describe('/api', () =>
                 });
             });
 
+            describe('DELETE', () =>
+            {
+                test("STATUS 204 - Responds with only the status code and no content.", () =>
+                {
+                    return request(app)
+                        .delete('/api/articles/1')
+                        .expect(204);
+                });
+                test("STATUS 404 - Responds with 'Not Found' when requested with a valid but non-existent ID.", () =>
+                {
+                    return request(app)
+                        .delete('/api/articles/999999')
+                        .expect(404)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Not Found');
+                        });
+                });
+                test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid ID.", () =>
+                {
+                    return request(app)
+                        .delete('/api/articles/not_a_number')
+                        .expect(400)
+                        .then(({ body: { msg } }) =>
+                        {
+                            expect(msg).toBe('Bad Request');
+                        });
+                });
+            });
+
 
             describe('/comments', () =>
             {

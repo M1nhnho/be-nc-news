@@ -1,4 +1,4 @@
-const { selectArticles, insertArticle, selectArticleByID, updateArticleByID } = require("../models/articles.model.js");
+const { selectArticles, insertArticle, selectArticleByID, updateArticleByID, removeArticleByID } = require("../models/articles.model.js");
 
 exports.getArticles = (request, response, next) =>
 {
@@ -40,6 +40,17 @@ exports.patchArticleByID = (request, response, next) =>
         .then((article) =>
         {
             response.status(200).send({ article });
+        })
+        .catch(next);
+};
+
+exports.deleteArticleByID = (request, response, next) =>
+{
+    const { article_id } = request.params;
+    removeArticleByID(article_id)
+        .then(() =>
+        {
+            response.status(204).send();
         })
         .catch(next);
 };
