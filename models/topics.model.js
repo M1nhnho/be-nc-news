@@ -12,11 +12,6 @@ exports.selectTopics = () =>
 exports.insertTopic = (requestBody) =>
 {
     const { slug, description } = requestBody;
-    if (!description)
-    {
-        return Promise.reject({ status: 400, msg: 'Bad Request' });
-    }
-
     return db.query(
             `INSERT INTO topics
                 (slug, description)

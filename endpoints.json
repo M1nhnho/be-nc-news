@@ -17,7 +17,6 @@
     "POST /api/topics":
     {
         "description": "Sends an topic to the database.",
-        "queries": [],
         "requestBodyFormat":
         {
             "slug": "<any string>",
@@ -59,7 +58,6 @@
     "POST /api/articles":
     {
         "description": "Sends an article to the database.",
-        "queries": [],
         "requestBodyFormat":
         {
             "author": "<string of any existing user>",
@@ -112,7 +110,6 @@
     "PATCH /api/articles/:article_id":
     {
         "description": "Updates the votes on the requested article.",
-        "queries": [],
         "requestBodyFormat": { "inc_votes": "<any number>" },
         "exampleResponse":
         {
@@ -129,6 +126,11 @@
                 "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
             }
         }
+    },
+
+    "DELETE /api/articles/:article_id":
+    {
+        "description": "Deletes an article from the database."
     },
 
     "GET /api/articles/:article_id/comments":
@@ -155,7 +157,6 @@
     "POST /api/articles/:article_id/comments":
     {
         "description": "Sends a comment to the database.",
-        "queries": [],
         "requestBodyFormat": { "username": "<string of any existing user>", "body": "<any string>" },
         "exampleResponse":
         {
@@ -174,7 +175,6 @@
     "PATCH /api/comments/:comment_id":
     {
         "description": "Updates the votes on the requested comment.",
-        "queries": [],
         "requestBodyFormat": { "inc_votes": "<any number>" },
         "exampleResponse":
         {
