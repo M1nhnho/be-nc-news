@@ -45,7 +45,7 @@ jobs:
       - name: Set Timezone
         uses: szenius/set-timezone@v1.2
         with:
-          timezoneLinux: "UTC"
+          timezoneLinux: "Europe/London"
 
       - name: Checkout Repo
         uses: actions/checkout@v4
