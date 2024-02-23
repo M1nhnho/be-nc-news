@@ -12,11 +12,14 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      - name: Install Dependencies
+        run: npm ci
+
       - name: Run Tests
-        run: npm t seedUtils
-  
-  app_and_utils:
-    name: Test App and its Utils
+        run: npm t seedUtils.test.js
+
+  app_utils:
+    name: Test App Utils
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -32,13 +35,28 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Set Timezone to Default
-        uses: szenius/set-timezone@v1.2
+      - name: Run Tests
+        run: PGDATABASE=testDatabase PGUSER=testUser PGPASSWORD=testPassword npm t appUtils.test.js
+  
+  app:
+    name: Test App
+    runs-on: ubuntu-latest
+    env:
+      TZ: "Europe/UK"
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Use PostgreSQL
+        uses: harmon758/postgresql-action@v1
         with:
-          timezoneLinux: "GMT"
-          timezoneMacos: "GMT"
-          timezoneWindows: "GMT"
+          postgresql db: testDatabase
+          postgresql user: testUser
+          postgresql password: testPassword
+
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Run Tests
-        run: PGDATABASE=testDatabase PGUSER=testUser PGPASSWORD=testPassword npm t app
+        run: PGDATABASE=testDatabase PGUSER=testUser PGPASSWORD=testPassword npm t app.test.js
 
