@@ -1,4 +1,4 @@
-name: Test & Deploy
+name: Test
 on:
   pull_request:
     branches:
@@ -63,12 +63,15 @@ jobs:
       - name: Run Tests
         run: PGDATABASE=testDatabase PGUSER=testUser PGPASSWORD=testPassword npm t app.test.js
 
-  test_live:
+  test_live_db:
     name: Test Live Database
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Run Tests
         run: DATABASE_URL=${{ secrets.DATABASE_URL }} npm t app.test.js
