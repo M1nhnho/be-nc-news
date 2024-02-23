@@ -1,7 +1,7 @@
 const {
-  convertTimestampToDate,
-  createRef,
-  formatComments,
+    convertTimestampToDate,
+    createRef,
+    formatComments,
 } = require("../db/seeds/utils");
 
 const db = require('../db/connection.js');
