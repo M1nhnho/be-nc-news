@@ -5,8 +5,18 @@ on:
     - main
 
 jobs:
-  test:
-    name: Test
+  seed_utils:
+    name: Test Seed Utils
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Run Tests
+        run: npm t seedUtils
+  
+  app_and_utils:
+    name: Test App and its Utils
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -25,10 +35,10 @@ jobs:
       - name: Set Timezone to Default
         uses: szenius/set-timezone@v1.2
         with:
-          timezoneLinux: "UTC"
-          timezoneMacos: "UTC"
-          timezoneWindows: "UTC"
+          timezoneLinux: "GMT"
+          timezoneMacos: "GMT"
+          timezoneWindows: "GMT"
 
       - name: Run Tests
-        run: PGDATABASE=testDatabase PGUSER=testUser PGPASSWORD=testPassword npm t
+        run: PGDATABASE=testDatabase PGUSER=testUser PGPASSWORD=testPassword npm t app
 
