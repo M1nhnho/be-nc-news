@@ -41,8 +41,6 @@ jobs:
   app:
     name: Test App
     runs-on: ubuntu-latest
-    env:
-      TZ: JST
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
