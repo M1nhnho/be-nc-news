@@ -63,3 +63,13 @@ jobs:
       - name: Run Tests
         run: PGDATABASE=testDatabase PGUSER=testUser PGPASSWORD=testPassword npm t app.test.js
 
+  test_live:
+    name: Test Live Database
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Run Tests
+        run: DATABASE_URL=${{ secrets.DATABASE_URL }} npm t app.test.js
+
