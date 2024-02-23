@@ -90,7 +90,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
             created_at,
             votes = 0,
             article_img_url,
-          }) => [title, topic, author, body, created_at.toISOString(), votes, article_img_url]
+          }) => [title, topic, author, body, created_at, votes, article_img_url]
         )
       );
 
@@ -108,7 +108,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
             author,
             article_id,
             votes,
-            created_at.toISOString(),
+            created_at,
           ]
         )
       );
