@@ -42,7 +42,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         topic VARCHAR NOT NULL REFERENCES topics(slug),
         author VARCHAR NOT NULL REFERENCES users(username),
         body VARCHAR NOT NULL,
-        created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+        created_at TIMESTAMP DEFAULT NOW(),
         votes INT DEFAULT 0 NOT NULL,
         article_img_url VARCHAR DEFAULT 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700'
       );`);
@@ -55,7 +55,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         article_id INT REFERENCES articles(article_id) ON DELETE CASCADE NOT NULL,
         author VARCHAR REFERENCES users(username) NOT NULL,
         votes INT DEFAULT 0 NOT NULL,
-        created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+        created_at TIMESTAMP DEFAULT NOW()
       );`);
     })
     .then(() => {
@@ -90,7 +90,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
             created_at,
             votes = 0,
             article_img_url,
-          }) => [title, topic, author, body, created_at, votes, article_img_url]
+          }) => [title, topic, author, body, created_at.toISOString(), votes, article_img_url]
         )
       );
 
@@ -108,7 +108,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
             author,
             article_id,
             votes,
-            created_at,
+            created_at.toISOString(),
           ]
         )
       );
