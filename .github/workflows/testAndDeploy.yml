@@ -49,6 +49,7 @@ jobs:
       - name: Use PostgreSQL
         uses: harmon758/postgresql-action@v1
         with:
+          postgresql version: '14.11'
           postgresql db: testDatabase
           postgresql user: testUser
           postgresql password: testPassword
