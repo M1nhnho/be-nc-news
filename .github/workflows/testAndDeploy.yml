@@ -28,7 +28,7 @@ jobs:
       - name: Use PostgreSQL
         uses: harmon758/postgresql-action@v1
         with:
-          postgresql version: '14.11'
+          postgresql version: '14'
           postgresql db: testDatabase
           postgresql user: testUser
           postgresql password: testPassword
@@ -43,13 +43,18 @@ jobs:
     name: Test App
     runs-on: ubuntu-latest
     steps:
+      - name: Set Timezone
+        uses: szenius/set-timezone@v1.2
+        with:
+          timezoneLinux: "Asia/Singapore"
+
       - name: Checkout Repo
         uses: actions/checkout@v4
 
       - name: Use PostgreSQL
         uses: harmon758/postgresql-action@v1
         with:
-          postgresql version: '14.11'
+          postgresql version: '14'
           postgresql db: testDatabase
           postgresql user: testUser
           postgresql password: testPassword
