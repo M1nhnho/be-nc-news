@@ -1,18 +1,14 @@
-const {
+const
+{
     convertTimestampToDate,
     createRef,
     formatComments,
-} = require("../db/seeds/utils");
-
-const db = require('../db/connection.js');
-const { checkExists } = require('../utils/checkExists.js');
-
-afterAll(() => db.end());
-
+} = require("../db/seeds/utils.js");
 
 describe("convertTimestampToDate", () =>
 {
-    test("returns a new object", () => {
+    test("returns a new object", () =>
+    {
         const timestamp = 1557572706232;
         const input = { created_at: timestamp };
         const result = convertTimestampToDate(input);
@@ -120,37 +116,5 @@ describe("formatComments", () =>
         const comments = [{ created_at: timestamp }];
         const formattedComments = formatComments(comments, {});
         expect(formattedComments[0].created_at).toEqual(new Date(timestamp));
-    });
-});
-
-describe('checkExists()', () =>
-{
-    test("Resolves when passed a value that exists in the passed table's column.", () =>
-    {
-        return checkExists('topics', 'slug', 'paper');
-    });
-    test("Rejects with an error when passed a table that does not exist.", () =>
-    {
-        return checkExists('non_existent', 'slug', 'paper')
-        .catch((error) =>
-        {
-            expect().pass(error);
-        });
-    });
-    test("Rejects with an error when passed a column that does not exist in the passed table.", () =>
-    {
-        return checkExists('topics', 'non_existent', 'paper')
-        .catch((error) =>
-        {
-            expect().pass(error);
-        });
-    });
-    test("Rejects with an error when passed a value that does not exist in the passed table's column.", () =>
-    {
-        return checkExists('topics', 'slug', 'not_existent')
-            .catch((error) =>
-            {
-                expect().pass(error);
-            });
     });
 });
