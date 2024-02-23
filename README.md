@@ -1,10 +1,10 @@
 # Northcoders News API
 As part of *Northcoder's Skills Bootcamp in Software Development*, we were tasked with building a RESTful news API backend which can provide information to my other frontend project. This API will allow clients to access articles, grouped under topics, along with comments and the users behind them - akin to Reddit or similar news services.
 
-This backend project follows the MVC pattern and was built in Javascript using [Express](https://expressjs.com/) to enable easier server routing and error handling. [PostgreSQL](https://www.postgresql.org/) was used for the databases and [Jest](https://jestjs.io/) with [SuperTest](https://www.npmjs.com/package/supertest) for testing.
+This backend project follows the MVC pattern and was built in Javascript using [Express](https://expressjs.com/) to enable easier server routing and error handling. [PostgreSQL](https://www.postgresql.org/) was used for the databases and [Jest](https://jestjs.io/) with [SuperTest](https://www.npmjs.com/package/supertest) for testing. Moreover, a CI/CD pipeline has been implemented through Github Actions to ensure tests pass before merging any pull requests.
 
 ## Hosted version
-The hosted version of my backend project can be found here:  
+The hosted version of my backend project can be found here (may take a minute to load initially):  
 https://nc-news-452q.onrender.com/api
 
 The online database is hosted via [ElephantSQL](https://www.elephantsql.com/) whereas the API is hosted via [Render](https://render.com/).
@@ -37,7 +37,7 @@ If you wish to run this backend project locally, ensure you fulfill the requirem
     - `.env.development`
 8. Add the following single line to each file: `PGDATABASE=<database_name>`
 9. Replace `<database_name>` with the appropriate name (these can be found in the `/db/setup.sql` file)
-10. Run the following command inside the terminal to ensure everything has been set up correctly:
+10. Run the following command inside the terminal to test everything has been set up correctly:
     ```
     npm t
     ```
