@@ -19,8 +19,7 @@ describe('/api', () =>
                 .expect(200)
                 .then(({ body: { endpoints } }) =>
                 {
-                    const parsedEndpointsResponse = JSON.parse(endpoints);
-                    expect(parsedEndpointsResponse).toEqual(endpointsData);
+                    expect(endpoints).toEqual(endpointsData);
                 });
         });
     });
