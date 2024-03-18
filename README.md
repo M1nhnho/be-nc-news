@@ -1,7 +1,7 @@
 # Northcoders News API
 As part of *Northcoder's Skills Bootcamp in Software Development*, we were tasked with building a RESTful news API backend which can provide information to my other [frontend project](https://github.com/M1nhnho/fe-nc-news). This API will allow clients to access articles, grouped under topics, along with comments and the users behind them - akin to Reddit or similar news services.
 
-This backend project follows the MVC pattern and was built in Javascript using [Express](https://expressjs.com/) to enable easier server routing and error handling. [PostgreSQL](https://www.postgresql.org/) was used for the databases and [Jest](https://jestjs.io/) with [SuperTest](https://www.npmjs.com/package/supertest) for TDD. Moreover, a CI/CD pipeline has been implemented through Github Actions to ensure tests pass before merging any pull requests.
+This backend project follows the MVC pattern and was built in JavaScript using [Express](https://expressjs.com/) to enable easier server routing and error handling. [PostgreSQL](https://www.postgresql.org/) was used for the databases and [Jest](https://jestjs.io/) with [SuperTest](https://www.npmjs.com/package/supertest) for TDD. Moreover, a CI/CD pipeline has been implemented through Github Actions to ensure tests pass before merging any pull requests.
 
 ## Hosted version
 My backend project along with the available endpoints can be found here (may take a minute to load initially):  
