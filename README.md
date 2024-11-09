@@ -1,13 +1,13 @@
-# Northcoders News API
+# Northcoders News API ![Static Badge](https://img.shields.io/badge/Node.js-v20.11.0-%23417e38) ![Static Badge](https://img.shields.io/badge/PostgreSQL-v14.9-%23669ac5) ![Static Badge](https://img.shields.io/badge/Express-v4.18.2-%23259dff) ![Static Badge](https://img.shields.io/badge/Jest-v27.5.1-%2315c213)
+
 As part of *Northcoder's Skills Bootcamp in Software Development*, we were tasked with building a RESTful news API backend which can provide information to my other [frontend project](https://github.com/M1nhnho/fe-nc-news). This API will allow clients to access articles, grouped under topics, along with comments and the users behind them - akin to Reddit or similar news services.
 
 This backend project follows the MVC pattern and was built in JavaScript using [Express](https://expressjs.com/) to enable easier server routing and error handling. [PostgreSQL](https://www.postgresql.org/) was used for the databases and [Jest](https://jestjs.io/) with [SuperTest](https://www.npmjs.com/package/supertest) for TDD. Moreover, a CI/CD pipeline has been implemented through Github Actions to ensure tests pass before merging any pull requests.
 
 ## Hosted version
-My backend project along with the available endpoints can be found here (may take a minute to load initially):  
-https://nc-news-452q.onrender.com/api
+### ➤ https://nc-news-452q.onrender.com/api
 
-The online database is hosted via [ElephantSQL](https://www.elephantsql.com/) whereas the API is hosted via [Render](https://render.com/).
+The online database is hosted via [Supabase](https://supabase.com/) whereas the API is hosted via [Render](https://render.com/).
 
 ## Local setup
 If you wish to run this backend project locally, ensure you fulfill the requirements below before following the instructions.
