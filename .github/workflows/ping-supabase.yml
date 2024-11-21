@@ -1,3 +1,6 @@
+# Regularly ping Supabase to prevent the automatic pausing
+# Credit:
+#   https://medium.com/@muhdfarseen/a-simple-hack-for-bypassing-supabase-pausing-03fa1d94a41e
 name: Ping Supabase to Prevent Pausing
 
 on:
@@ -27,5 +30,5 @@ jobs:
           node -e "
           const { createClient } = require('@supabase/supabase-js');
           const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-          supabase.from('your_table').select('id').limit(1).then(console.log).catch(console.error);
+          supabase.from('users').select('username').limit(1).then(console.log).catch(console.error);
           "
